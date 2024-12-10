@@ -9,7 +9,7 @@ abstract contract StableUSDCoin is ERC20Burnable, Ownable {
     error StableUSDCoin__UserBalanceIsZero();
     error StableUSDCoin__NotZeroAddress();
 
-    constructor() ERC20("StableUSDCoin", "SUSDC") {}
+    constructor() ERC20("StableUSDCoin", "SUSDC") Ownable(msg.sender) {}
 
     function burn(uint256 _amount) public override {
         if (_amount <= 0) {
