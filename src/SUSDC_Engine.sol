@@ -34,4 +34,25 @@ contract SUSDC_Engine is ReentrancyGuard {
     constructor(address SUSDC) {
         i_SUSDC = StableUSDCoin(SUSDC);
     }
+
+    /**
+     * @notice depositCollateral updates the collateral for the user and transfers the collateral to SUSDC_Engine contract
+     * @param _amount no of collateral tokens to transfer
+     * @param _collateralAddress address of the collateral
+     */
+    function depositCollateral(
+        uint256 _amount,
+        address _collateralAddress
+    ) internal moreThanZero(_amount) nonReentrant {
+        s_userCollateral[msg.sender][_collateralAddress] += _amount;
+        emit Deposited(msg.sender, _collateralAddress, _amount);
+        bool success = IERC20(_collateralAddress).transferFrom(
+            msg.sender,
+            address(this),
+            _amount
+        );
+        if (!success) {
+            revert SUSDC_Engine__TransferFailed();
+        }
+    }
 }
